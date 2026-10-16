@@ -859,7 +859,7 @@ const extraArea = it => [{valor:fmtHa(it.area)+' ha', nome:'área'}];
 const extraN    = it => [{valor:fmtInt(it.n), nome:it.n===1?'registro':'registros'}];
 
 const CARTOES = [
-  { id:'alertas-mes', largo:true, titulo:'Evolução dos alertas de desmatamento obtidos pelo plugin QGIS REDD+ Piauí ',
+  { id:'alertas-mes', largo:true, titulo:'Evolução dos alertas de desmatamento obtidos pelo plugin QGIS REDD+ Piauí',
     sub:'Quantidade de alertas pela data em que foram detectados.',
     tipo:'tempo', tab:{rotuloCol:'Mês', valorCol:'Alertas', rotuloFmt:fmtMes},
     itens:()=>porMes(filtrar(est.dados.alertas)),
@@ -868,12 +868,13 @@ const CARTOES = [
   { id:'alertas-ciclo', titulo:'Alertas por ciclo',
     sub:'Cada ciclo é uma rodada de detecção do plugin QGIS REDD+ Piauí.',
     tipo:'colunas', tab:{rotuloCol:'Ciclo', valorCol:'Alertas'},
+    // do maior ciclo para o menor
     itens:()=>agrupar(filtrar(est.dados.alertas), r=>r.ciclo)
-              .sort((a,b)=>(parseFloat(a.rotulo)||0)-(parseFloat(b.rotulo)||0) || a.rotulo.localeCompare(b.rotulo,'pt-BR')),
+              .sort((a,b)=>(parseFloat(b.rotulo)||0)-(parseFloat(a.rotulo)||0) || b.rotulo.localeCompare(a.rotulo,'pt-BR')),
     opc:()=>({campo:'n', cor:C_ALERTAS, nomeValor:'alertas', extra:extraArea}) },
 
   { id:'alertas-prioridade', titulo:'Prioridade dos alertas',
-    sub:'Quantidade de alertas porprioridade.',
+    sub:'Quantidade de alertas por prioridade.',
     tipo:'barras', tab:{rotuloCol:'Prioridade', valorCol:'Alertas'},
     itens:()=>itensPrioridade(),
     opc:()=>{
@@ -1081,8 +1082,7 @@ function cartaoMapa(id, titulo, sub, largo){
 function montarMapas(){
   const host=$('#mapas'); host.textContent='';
   host.appendChild(cartaoMapa('mapaCalor','Densidade de alertas prioritários',
-    'Concentração no território piauiense dos alertas com prioridade "sim"; '
-    + '', true));
+    'Concentração no território piauiense dos alertas com prioridade "sim".', true));
 }
 
 /* centro aproximado de um polígono GeoJSON: média dos vértices do contorno.
